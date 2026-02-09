@@ -1,19 +1,48 @@
-const express = require("express");
-const cors = require("cors");
-const connectDB = require("./config/db");
+// Load environment variables from .env file
+// Must be called at top before using process.env
 require("dotenv").config();
 
+// Import required packages
+const express = require("express"); // Backend framework
+const cors = require("cors"); // Allows frontend to connect
+const connectDB = require("./config/db"); // Our DB connection file
+
+// Create express app
 const app = express();
 
+// Connect to database before starting server
 connectDB();
+
+// --------------------
+// MIDDLEWARES
+// --------------------
+
+// Enable CORS
+// Without this, frontend (localhost:3000) cannot call backend (localhost:5000)
 app.use(cors());
+
+// Parse JSON body
+// Allows us to read req.body in POST/PUT requests
 app.use(express.json());
 
-app.get("/", (req, res) => {
-    res.json({ message: "Welcome to TaskHub API" });
-})
+// --------------------
+// ROUTES
+// --------------------
 
-app.listen(process.env.PORT || 5000, () => {
-    console.log(`Server is running on ${process.env.PORT || 5000}`);   
-}
-);
+// Test route
+// When user hits http://localhost:5000/
+app.get("/", (req, res) => {
+  res.send("TaskHub API Running 🚀");
+});
+
+// --------------------
+// SERVER START
+// --------------------
+
+// Use PORT from .env or default 5000
+const PORT = process.env.PORT || 5000;
+
+// Start listening on that port
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
