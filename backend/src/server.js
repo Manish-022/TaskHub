@@ -27,6 +27,8 @@ app.use(express.json());
 
 // --------------------
 // ROUTES
+app.use("/api/auth", require("./routes/authRoutes")); 
+
 // --------------------
 
 // Test route
@@ -39,8 +41,8 @@ app.get("/", (req, res) => {
 // SERVER START
 // --------------------
 
-// Use PORT from .env or default 5000
-const PORT = process.env.PORT || 5000;
+// Use PORT from .env or default 5001
+const PORT = process.env.PORT || 5001;
 
 // Start listening on that port
 app.listen(PORT, () => {
