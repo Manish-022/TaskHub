@@ -1,28 +1,54 @@
+// Import jsonwebtoken package
+// Used to verify the token sent by client
 const jwt = require("jsonwebtoken");
 
+// Import User model
+// Used to fetch user details from database
 const User = require("../models/User");
 
-const protect = async (requestAnimationFrame, res, next) => {
-    
-    let token;
+// Middleware function
+// It runs BEFORE protected route executes
+// next() → moves to next function (actual route)
+const protect = async (req, res, next) => {
+  let token; // Variable to store extracted token
 
-    if (req.headers.authorization && req.headers.authorization.startsWith("Bearer")) {
-        token = req.headers.authorization.split(" ")[1];
-    }
+  // Check if request has Authorization header
+  // Format should be: "Bearer TOKEN"
+  if (
+    req.headers.authorization &&
+    req.headers.authorization.startsWith("Bearer")
+  ) {
+    // Extract token from header
+    // "Bearer abcdef12345"
+    // split(" ") → ["Bearer", "abcdef12345"]
+    token = req.headers.authorization.split(" ")[1];
 
     try {
-        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+      // Verify token using secret key
+      // If invalid or expired → throws error
+      const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-        req.user = await User.findById(decoded.id).select("-password");
-        next();
+      // decoded teaches us what we stored while generating token
+      // Example:
+      // { id: "userId123", role: "user", iat: ..., exp: ... }
+
+      // Find user from database using id inside token
+      // .select("-password") → exclude password field
+      req.user = await User.findById(decoded.id).select("-password");
+
+      // Move to next middleware or route
+      next();
     } catch (error) {
-        return res.status(401).json({ message: "Not authorized, token failed" });
-        
+      // If token invalid or expired
+      return res.status(401).json({ message: "Not authorized" });
     }
-}
+  }
 
-if (!token) {
-    return res.status(401).json({ message: "Not authorized, no token" });
-}
+  // If no token found in header
+  if (!token) {
+    return res.status(401).json({ message: "No token provided" });
+  }
+};
 
+// Export middleware
 module.exports = protect;
