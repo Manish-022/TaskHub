@@ -96,8 +96,10 @@ router.post("/login", async (req, res) => {
       },
     });
   } catch (error) {
-    res.status(500).json({ message: "Server error" });
+    console.log(error); // 👈 ADD THIS
+    res.status(500).json({ message: "Server error", error: error.message });
   }
+
 });
 
 // Export router so server.js can use it
