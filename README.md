@@ -1,5 +1,5 @@
 # 📌 Backend Authentication API
-
+📅 Day 1
 A secure backend authentication system built using **Node.js, Express, MongoDB, JWT, and bcrypt**.
 
 This project implements user registration, login, password hashing, JWT authentication, and protected routes following MVC architecture.
@@ -49,7 +49,7 @@ server.js
 
 ---
 
-## 🔐 Authentication System
+### 📅 Day 2 🔐 Authentication System
 
 ### 👤 User Model
 
@@ -183,3 +183,170 @@ After completing this project, I understand:
 - ✅ Register & Login Working  
 - ✅ JWT Authentication Working  
 - ✅ Protected Routes Working  
+
+# 📅 Day 3 – Task CRUD with Authentication & Ownership
+
+## 🚀 Overview
+
+On Day 4, I implemented a complete Task Management CRUD system with:
+
+- JWT Authentication
+- Protected Routes
+- User-based Ownership Logic
+- Reference relationship between User and Task
+- Authorization checks for update & delete
+
+This ensures that users can only access and modify their own tasks securely.
+
+---
+
+## 🛠 Tech Stack
+
+- Node.js
+- Express.js
+- MongoDB
+- Mongoose
+- JSON Web Token (JWT)
+- bcrypt
+
+---
+
+## 📂 Folder Structure
+
+```
+/models
+    User.js
+    Task.js
+
+/controllers
+    userController.js
+    taskController.js
+
+/routes
+    userRoutes.js
+    taskRoutes.js
+
+/middleware
+    authMiddleware.js
+
+server.js
+```
+
+---
+
+## 📌 Task Model Structure
+
+- `title` → String (required)
+- `description` → String
+- `status` → Enum ("pending", "completed")
+- `user` → ObjectId (Reference to User)
+- `timestamps` → enabled
+
+### Reference Example
+
+```js
+user: {
+  type: mongoose.Schema.Types.ObjectId,
+  ref: "User",
+  required: true
+}
+```
+
+This creates a relationship between Task and User collections.
+
+---
+
+## 🔐 Authentication Flow
+
+1. User logs in
+2. JWT token is generated
+3. Token is sent in request headers:
+
+```
+Authorization: Bearer <TOKEN>
+```
+
+4. `protect` middleware verifies the token
+5. `req.user` is attached
+6. Controller performs action
+
+---
+
+## 🟢 Implemented Routes
+
+### ➤ Create Task
+```
+POST /api/tasks
+```
+Creates a new task for the logged-in user.
+
+---
+
+### ➤ Get All User Tasks
+```
+GET /api/tasks
+```
+Returns only tasks that belong to the authenticated user.
+
+---
+
+### ➤ Update Task
+```
+PUT /api/tasks/:id
+```
+Updates a task only if the user owns it.
+
+---
+
+### ➤ Delete Task
+```
+DELETE /api/tasks/:id
+```
+Deletes a task only if the user owns it.
+
+---
+
+## 🔒 Ownership Logic
+
+Before updating or deleting:
+
+```js
+if (task.user.toString() !== req.user._id.toString()) {
+    return res.status(401).json({ message: "Not authorized" });
+}
+```
+
+This prevents users from modifying other users' tasks.
+
+---
+
+## 🧠 Concepts Learned
+
+- Authentication vs Authorization
+- Protected Routes
+- Middleware usage
+- MongoDB Reference Relationship
+- Ownership Validation
+- MVC Architecture
+- Secure API Design
+
+---
+
+## 📬 Testing
+
+All APIs were tested using Postman with JWT in Authorization header.
+
+---
+
+## 🎯 Key Takeaway
+
+Implemented secure, user-specific CRUD operations using JWT authentication and ownership validation — a core backend development concept.
+
+---
+
+## 🚀 Next Improvements
+
+- Pagination
+- Task filtering (completed / pending)
+- Role-based access (Admin)
+- Frontend integration (React)
