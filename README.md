@@ -350,3 +350,210 @@ Implemented secure, user-specific CRUD operations using JWT authentication and o
 - Task filtering (completed / pending)
 - Role-based access (Admin)
 - Frontend integration (React)
+
+# 📅 Day 4 – Task CRUD with JWT Authentication & Ownership Logic
+
+## 🚀 Overview
+
+On Day 4, I implemented a complete **Task Management CRUD system** with:
+
+- JWT-based Authentication
+- Protected Routes using Middleware
+- User-based Ownership Validation
+- MongoDB Reference Relationship (User ↔ Task)
+- Secure Authorization checks for Update & Delete operations
+
+This ensures that users can only access and modify their own tasks.
+
+---
+
+## 🛠 Tech Stack
+
+- Node.js
+- Express.js
+- MongoDB
+- Mongoose
+- JSON Web Token (JWT)
+- bcrypt
+- dotenv
+
+---
+
+## 📂 Project Structure
+
+```
+backend/
+│
+├── src/
+│   ├── controllers/
+│   │   ├── authController.js
+│   │   └── taskController.js
+│   │
+│   ├── routes/
+│   │   ├── authRoutes.js
+│   │   └── taskRoutes.js
+│   │
+│   ├── models/
+│   │   ├── User.js
+│   │   └── Task.js
+│   │
+│   ├── middleware/
+│   │   └── authMiddleware.js
+│   │
+│   └── server.js
+│
+└── .env
+```
+
+---
+
+## 📌 Task Model
+
+```js
+title: String (required)
+description: String
+status: Enum ("pending", "completed")
+user: ObjectId (Reference to User)
+timestamps: true
+```
+
+### 🔗 Reference Relationship
+
+```js
+user: {
+  type: mongoose.Schema.Types.ObjectId,
+  ref: "User",
+  required: true
+}
+```
+
+Each task belongs to a specific user (similar to a foreign key in SQL).
+
+---
+
+## 🔐 Authentication Flow
+
+1. User registers
+2. User logs in
+3. JWT token is generated
+4. Token is sent in request headers:
+
+```
+Authorization: Bearer <TOKEN>
+```
+
+5. `protect` middleware verifies token
+6. `req.user` is attached to request
+7. Controller performs authorized action
+
+---
+
+## 🟢 Implemented API Routes
+
+### ➤ Register User
+```
+POST /api/auth/register
+```
+
+### ➤ Login User
+```
+POST /api/auth/login
+```
+
+---
+
+### ➤ Create Task
+```
+POST /api/tasks
+```
+Creates a task for the authenticated user.
+
+---
+
+### ➤ Get All User Tasks
+```
+GET /api/tasks
+```
+Returns only tasks belonging to the logged-in user.
+
+---
+
+### ➤ Update Task
+```
+PUT /api/tasks/:id
+```
+Allows update only if the user owns the task.
+
+---
+
+### ➤ Delete Task
+```
+DELETE /api/tasks/:id
+```
+Allows deletion only if the user owns the task.
+
+---
+
+## 🔒 Ownership Validation Logic
+
+```js
+if (task.user.toString() !== req.user._id.toString()) {
+    return res.status(401).json({ message: "Not authorized" });
+}
+```
+
+This ensures:
+
+- User A cannot update User B’s task
+- User A cannot delete User B’s task
+- Secure multi-user environment
+
+---
+
+## 🧪 Testing
+
+All APIs tested using Postman.
+
+Security verified by:
+
+- Testing without token → 401 Unauthorized
+- Testing with invalid token → 401 Unauthorized
+- Testing with valid token → Success
+- Testing cross-user task access → Blocked
+
+---
+
+## 🧠 Concepts Learned
+
+- Authentication vs Authorization
+- JWT Token Structure
+- Middleware Flow
+- MongoDB ObjectId Comparison
+- Secure API Design
+- MVC Architecture
+- Ownership-based Access Control
+
+---
+
+## 🎯 Key Achievement
+
+Successfully built a secure multi-user backend system where:
+
+- Users can create and manage tasks
+- Tasks are linked to users
+- Unauthorized access is blocked
+- Protected routes enforce security
+
+---
+
+## 🚀 Next Improvements
+
+- Pagination
+- Task filtering (completed / pending)
+- Role-based access control (Admin)
+- Frontend integration (React)
+- Deployment (Render / Railway / AWS)
+
+---
+
+### 💡 Status: Day 4 Backend System Complete ✅
