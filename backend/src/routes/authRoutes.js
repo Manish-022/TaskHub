@@ -3,6 +3,7 @@ const express = require("express"); // Web framework
 const bcrypt = require("bcryptjs"); // For hashing passwords
 const jwt = require("jsonwebtoken"); // For generating JWT token
 const User = require("../models/User"); // Import User model
+const Task = require("../models/Task"); // Import Task model (for testing purposes)
 
 // Create router object
 const router = express.Router();

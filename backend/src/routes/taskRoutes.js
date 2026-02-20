@@ -17,7 +17,7 @@ const {
 // Import authentication middleware
 // This middleware verifies JWT token
 // and attaches logged-in user to req.user
-const protect = require("../middleware/authMiddleware");
+const protect = require("../middlewares/authMiddleware");
 
 // =============================
 // CREATE TASK ROUTE

@@ -29,6 +29,9 @@ app.use(express.json());
 // ROUTES
 app.use("/api/auth", require("./routes/authRoutes")); 
 
+// ✅ ADD THIS LINE (IMPORTANT)
+app.use("/api/task", require("./routes/taskRoutes"));
+
 // --------------------
 
 // Test route
