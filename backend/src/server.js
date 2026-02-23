@@ -30,7 +30,7 @@ app.use(express.json());
 app.use("/api/auth", require("./routes/authRoutes")); 
 
 // ✅ ADD THIS LINE (IMPORTANT)
-app.use("/api/task", require("./routes/taskRoutes"));
+app.use("/api/tasks", require("./routes/taskRoutes"));
 
 // --------------------
 

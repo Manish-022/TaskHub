@@ -21,12 +21,12 @@ const protect = async (req, res, next) => {
     // Extract token from header
     // "Bearer abcdef12345"
     // split(" ") → ["Bearer", "abcdef12345"]
-    token = req.headers.authorization.split(" ")[1];
+    let rawToken = req.headers.authorization.split(" ")[1];
+    token = rawToken.replace(/^"+|"+$/g, "");
 
     try {
       // Verify token using secret key
       // If invalid or expired → throws error
-      const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
       // decoded teaches us what we stored while generating token
       // Example:
@@ -34,9 +34,14 @@ const protect = async (req, res, next) => {
 
       // Find user from database using id inside token
       // .select("-password") → exclude password field
-      req.user = await User.findById(decoded.id).select("-password");
 
-      
+      console.log("Authorization Header:", req.headers.authorization);
+
+      const decoded = jwt.verify(token, process.env.JWT_SECRET);
+      console.log("Decoded Token:", decoded);
+
+      req.user = await User.findById(decoded.id).select("-password");
+      console.log("User Found:", req.user);
 
       // Move to next middleware or route
       next();
