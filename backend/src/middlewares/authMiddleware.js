@@ -16,13 +16,14 @@ const protect = async (req, res, next) => {
   // Format should be: "Bearer TOKEN"
   if (
     req.headers.authorization &&
-    req.headers.authorization.startsWith("Bearer")
+    req.headers.authorization.startsWith("Bearer ")
   ) {
     // Extract token from header
     // "Bearer abcdef12345"
     // split(" ") → ["Bearer", "abcdef12345"]
-    let rawToken = req.headers.authorization.split(" ")[1];
-    token = rawToken.replace(/^"+|"+$/g, "");
+    token = req.headers.authorization.split(" ")[1];
+    // token = rawToken.replace(/^"+|"+$/g, "");
+    console.log(token);
 
     try {
       // Verify token using secret key
@@ -42,6 +43,11 @@ const protect = async (req, res, next) => {
 
       req.user = await User.findById(decoded.id).select("-password");
       console.log("User Found:", req.user);
+
+
+      console.log("AUTH HEADER:", req.headers.authorization);
+      console.log("TOKEN:", token);
+      console.log("SECRET:", process.env.JWT_SECRET);
 
       // Move to next middleware or route
       next();
