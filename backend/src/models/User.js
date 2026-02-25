@@ -26,8 +26,9 @@ const userSchema = new mongoose.Schema(
 
     // role field (for authorization)
     role: {
-      type: String, // Role is stored as string
-      default: "user", // If not provided, it automatically becomes "user"
+      type: String,
+      enum: ["user", "admin"],
+      default: "user",
     },
   },
   {
