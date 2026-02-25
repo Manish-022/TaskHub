@@ -31,7 +31,8 @@ app.use("/api/auth", require("./routes/authRoutes"));
 
 // ✅ ADD THIS LINE (IMPORTANT)
 app.use("/api/tasks", require("./routes/taskRoutes"));
-
+// ✅ ADD THIS
+app.use("/api/admin", require("./routes/adminRoutes"));
 // --------------------
 
 // Test route
