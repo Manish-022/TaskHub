@@ -562,3 +562,82 @@ Successfully built a secure multi-user backend system where:
 ### verification not done till now
 ### complete it
 ### Day 4 fully completed 
+
+# 🟢 DAY 5 – Admin Authorization (RBAC)
+
+## 📌 Objective
+Implemented **Role-Based Access Control (RBAC)** to restrict certain routes to admin users only.
+
+---
+
+## 🔐 Features Implemented
+
+- Added `role` field in User model (`user` / `admin`)
+- Included role inside JWT payload
+- Created `checkAdmin` middleware
+- Built Admin-only routes:
+  - Get all users
+  - Delete user
+- Prevented admin from deleting his own account
+
+---
+
+## 🛡 Middleware Flow
+
+Request  
+   ↓  
+authMiddleware (JWT verification)  
+   ↓  
+checkAdmin (Role verification)  
+   ↓  
+Controller  
+
+---
+
+## 👑 Admin Routes
+
+### Get All Users
+
+GET /api/admin/users
+
+
+### Delete User
+
+DELETE /api/admin/users/:id
+
+
+Header:
+
+Authorization: Bearer YOUR_TOKEN
+
+
+---
+
+## 🚫 Self-Delete Protection
+
+If admin tries to delete himself:
+
+
+400 → Admin cannot delete his own account.
+
+
+---
+
+## 🧠 Concepts Learned
+
+- Authentication vs Authorization  
+- Role-Based Access Control (RBAC)  
+- Middleware chaining in Express  
+- Secure admin route implementation  
+
+---
+
+## ✅ Status
+
+✔ Admin-only access working  
+✔ Role verification implemented  
+✔ Self-protection logic added  
+
+---
+
+🚀 Day 5 completed successfully.
