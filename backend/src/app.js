@@ -1,14 +1,23 @@
 const express = require("express");
-const errorMiddleware = require("./middleware/errorMiddleware");
+const cors = require("cors");
+const connectDB = require("./config/db");
+const errorMiddleware = require("./middlewares/errorMiddleware");
 
 const app = express();
 
+connectDB();
+
+app.use(cors());
 app.use(express.json());
 
-// your routes here
+app.use("/api/auth", require("./routes/authRoutes"));
 app.use("/api/tasks", require("./routes/taskRoutes"));
+app.use("/api/admin", require("./routes/adminRoutes"));
 
-// ✅ Error middleware MUST be last
-app.use(errorMiddleware);
+app.get("/", (req, res) => {
+  res.send("TaskHub API Running 🚀");
+});
+
+app.use(errorMiddleware); // MUST BE LAST
 
 module.exports = app;

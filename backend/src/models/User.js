@@ -1,45 +1,38 @@
-// Import mongoose library
-// Mongoose helps us define structure (schema) for MongoDB documents
 const mongoose = require("mongoose");
+const bcrypt = require("bcryptjs");
 
-// Create a Schema (Blueprint of User document)
-const userSchema = new mongoose.Schema(
-  {
-    // name field
-    name: {
-      type: String, // Data type will be String
-      required: true, // This field must be provided while creating user
-    },
-
-    // email field
-    email: {
-      type: String, // Email must be a String
-      required: true, // Cannot create user without email
-      unique: true, // No two users can have same email (adds unique index)
-    },
-
-    // password field
-    password: {
-      type: String, // Will store hashed password (not plain text)
-      required: true, // Password is mandatory
-    },
-
-    // role field (for authorization)
-    role: {
-      type: String,
-      enum: ["user", "admin"],
-      default: "user",
-    },
+const userSchema = new mongoose.Schema({
+  name: {
+    type: String,
+    required: true,
   },
-  {
-    // Automatically adds:
-    // createdAt → when user was created
-    // updatedAt → when user was last updated
-    timestamps: true,
+  email: {
+    type: String,
+    required: true,
+    unique: true,
   },
-);
+  password: {
+    type: String,
+    required: true,
+  },
+  role: {
+    type: String,
+    enum: ["user", "admin"],
+    default: "user",
+  },
+});
 
-// Export the model
-// "User" → MongoDB collection name will become "users"
-// userSchema → structure of each document
+// 🔐 HASH PASSWORD BEFORE SAVE
+userSchema.pre("save", async function (next) {
+  if (!this.isModified("password")) return next();
+
+  this.password = await bcrypt.hash(this.password, 10);
+  next(); // ✅ This is mongoose next, not express next
+});
+
+// 🔐 COMPARE PASSWORD METHOD
+userSchema.methods.comparePassword = async function (enteredPassword) {
+  return await bcrypt.compare(enteredPassword, this.password);
+};
+
 module.exports = mongoose.model("User", userSchema);

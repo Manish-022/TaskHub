@@ -1,37 +1,38 @@
-// Import Task model
-// This allows us to interact with the Task collection in MongoDB
 const Task = require("../models/Task");
 const ApiError = require("../utils/ApiError");
-// =============================
-// CREATE TASK
-// =============================
-exports.createTask = async (req, res) => {
+
+/* =============================
+   CREATE TASK
+============================= */
+exports.createTask = async (req, res, next) => {
   try {
-    // Destructure title and description from request body
     const { title, description } = req.body;
 
-    // Create a new task in database
-    // user: req.user._id comes from auth middleware (JWT verified user)
+    if (!title) {
+      return next(new ApiError(400, "Title is required"));
+    }
+
     const task = await Task.create({
       title,
       description,
-      user: req.user._id, // Attach logged-in user's ID
+      user: req.user._id,
     });
 
-    // Send created task with 201 status (Created)
-    res.status(201).json(task);
+    res.status(201).json({
+      status: "success",
+      data: task,
+    });
   } catch (error) {
-    // If any error occurs, send 500 (Server Error)
-    res.status(500).json({ message: error.message });
+    next(error);
   }
 };
 
-// =============================
-// GET ALL TASKS FOR LOGGED IN USER
-// =============================
+/* =============================
+   GET TASKS
+============================= */
 exports.getTasks = async (req, res, next) => {
   try {
-    const tasks = await Task.find({ user: req.user.id });
+    const tasks = await Task.find({ user: req.user._id });
 
     res.status(200).json({
       status: "success",
@@ -39,72 +40,62 @@ exports.getTasks = async (req, res, next) => {
       data: tasks,
     });
   } catch (error) {
-    next(error); // send to central error handler
+    next(error);
   }
 };
 
-// =============================
-// UPDATE TASK
-// =============================
-exports.updateTask = async (req, res) => {
+/* =============================
+   UPDATE TASK
+============================= */
+exports.updateTask = async (req, res, next) => {
   try {
-    // Find task by ID from URL parameter
     const task = await Task.findById(req.params.id);
 
-    // If task does not exist → return 404
     if (!task) {
-      return res.status(404).json({ message: "Task not found" });
+      return next(new ApiError(404, "Task not found"));
     }
 
-    // -------------------------
-    // OWNERSHIP CHECK
-    // -------------------------
-    // Convert ObjectId to string for comparison
-    // Ensure only the owner can update the task
     if (task.user.toString() !== req.user._id.toString()) {
-      return res.status(401).json({ message: "Not authorized" });
+      return next(new ApiError(403, "Not authorized to modify this task"));
     }
 
-    // Update only provided fields (Partial update)
     task.title = req.body.title || task.title;
     task.description = req.body.description || task.description;
     task.status = req.body.status || task.status;
 
-    // Save updated task in database
     const updatedTask = await task.save();
 
-    // Send updated task
-    res.json(updatedTask);
+    res.status(200).json({
+      status: "success",
+      data: updatedTask,
+    });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    next(error);
   }
 };
 
-// =============================
-// DELETE TASK
-// =============================
-exports.deleteTask = async (req, res) => {
+/* =============================
+   DELETE TASK
+============================= */
+exports.deleteTask = async (req, res, next) => {
   try {
-    // Find task by ID
     const task = await Task.findById(req.params.id);
 
-    // If task not found → 404
     if (!task) {
-      return res.status(404).json({ message: "Task not found" });
+      return next(new ApiError(404, "Task not found"));
     }
 
-    // Ownership validation
-    // Only the user who created the task can delete it
     if (task.user.toString() !== req.user._id.toString()) {
-      return res.status(401).json({ message: "Not authorized" });
+      return next(new ApiError(403, "Not authorized to delete this task"));
     }
 
-    // Delete task from database
     await task.deleteOne();
 
-    // Send success message
-    res.json({ message: "Task deleted" });
+    res.status(200).json({
+      status: "success",
+      message: "Task deleted successfully",
+    });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    next(error);
   }
 };

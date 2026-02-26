@@ -1,10 +1,10 @@
-module.exports = (err, req, res, next) => {
-  console.error(err);
+module.exports = function (err, req, res, next) {
+  console.log("ERROR MIDDLEWARE TRIGGERED");
+  console.log("Type of next:", typeof next);
+  console.log("Error message:", err.message);
 
-  const statusCode = err.statusCode || 500;
-
-  res.status(statusCode).json({
-    status: err.status || "error",
-    message: err.message || "Something went wrong",
+  res.status(500).json({
+    status: "error",
+    message: err.message,
   });
 };
