@@ -1,7 +1,7 @@
 // Import Task model
 // This allows us to interact with the Task collection in MongoDB
 const Task = require("../models/Task");
-
+const ApiError = require("../utils/ApiError");
 // =============================
 // CREATE TASK
 // =============================
@@ -29,16 +29,17 @@ exports.createTask = async (req, res) => {
 // =============================
 // GET ALL TASKS FOR LOGGED IN USER
 // =============================
-exports.getTasks = async (req, res) => {
+exports.getTasks = async (req, res, next) => {
   try {
-    // Find all tasks where user field matches logged-in user's ID
-    // This ensures user only sees their own tasks (Ownership logic)
-    const tasks = await Task.find({ user: req.user._id });
+    const tasks = await Task.find({ user: req.user.id });
 
-    // Send all tasks as response
-    res.json(tasks);
+    res.status(200).json({
+      status: "success",
+      results: tasks.length,
+      data: tasks,
+    });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    next(error); // send to central error handler
   }
 };
 
