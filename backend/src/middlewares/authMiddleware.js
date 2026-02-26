@@ -42,12 +42,12 @@ const protect = async (req, res, next) => {
       console.log("Decoded Token:", decoded);
 
       req.user = await User.findById(decoded.id).select("-password");
-      console.log("User Found:", req.user);
+      // console.log("User Found:", req.user);
 
 
-      console.log("AUTH HEADER:", req.headers.authorization);
-      console.log("TOKEN:", token);
-      console.log("SECRET:", process.env.JWT_SECRET);
+      // console.log("AUTH HEADER:", req.headers.authorization);
+      // console.log("TOKEN:", token);
+      // console.log("SECRET:", process.env.JWT_SECRET);
 
       // Move to next middleware or route
       next();
