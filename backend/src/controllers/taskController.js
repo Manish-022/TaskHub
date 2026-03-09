@@ -1,15 +1,17 @@
 const Task = require("../models/Task");
-const ApiError = require("../utils/ApiError");
 
 /* =============================
    CREATE TASK
 ============================= */
-exports.createTask = async (req, res, next) => {
+exports.createTask = async (req, res) => {
   try {
     const { title, description } = req.body;
 
     if (!title) {
-      return next(new ApiError(400, "Title is required"));
+      return res.status(400).json({
+        status: "error",
+        message: "Title is required",
+      });
     }
 
     const task = await Task.create({
@@ -23,14 +25,17 @@ exports.createTask = async (req, res, next) => {
       data: task,
     });
   } catch (error) {
-    next(error);
+    res.status(500).json({
+      status: "error",
+      message: error.message,
+    });
   }
 };
 
 /* =============================
    GET TASKS
 ============================= */
-exports.getTasks = async (req, res, next) => {
+exports.getTasks = async (req, res) => {
   try {
     const tasks = await Task.find({ user: req.user._id });
 
@@ -40,23 +45,32 @@ exports.getTasks = async (req, res, next) => {
       data: tasks,
     });
   } catch (error) {
-    next(error);
+    res.status(500).json({
+      status: "error",
+      message: error.message,
+    });
   }
 };
 
 /* =============================
    UPDATE TASK
 ============================= */
-exports.updateTask = async (req, res, next) => {
+exports.updateTask = async (req, res) => {
   try {
     const task = await Task.findById(req.params.id);
 
     if (!task) {
-      return next(new ApiError(404, "Task not found"));
+      return res.status(404).json({
+        status: "error",
+        message: "Task not found",
+      });
     }
 
     if (task.user.toString() !== req.user._id.toString()) {
-      return next(new ApiError(403, "Not authorized to modify this task"));
+      return res.status(403).json({
+        status: "error",
+        message: "Not authorized to modify this task",
+      });
     }
 
     task.title = req.body.title || task.title;
@@ -70,23 +84,32 @@ exports.updateTask = async (req, res, next) => {
       data: updatedTask,
     });
   } catch (error) {
-    next(error);
+    res.status(500).json({
+      status: "error",
+      message: error.message,
+    });
   }
 };
 
 /* =============================
    DELETE TASK
 ============================= */
-exports.deleteTask = async (req, res, next) => {
+exports.deleteTask = async (req, res) => {
   try {
     const task = await Task.findById(req.params.id);
 
     if (!task) {
-      return next(new ApiError(404, "Task not found"));
+      return res.status(404).json({
+        status: "error",
+        message: "Task not found",
+      });
     }
 
     if (task.user.toString() !== req.user._id.toString()) {
-      return next(new ApiError(403, "Not authorized to delete this task"));
+      return res.status(403).json({
+        status: "error",
+        message: "Not authorized to delete this task",
+      });
     }
 
     await task.deleteOne();
@@ -96,6 +119,9 @@ exports.deleteTask = async (req, res, next) => {
       message: "Task deleted successfully",
     });
   } catch (error) {
-    next(error);
+    res.status(500).json({
+      status: "error",
+      message: error.message,
+    });
   }
 };

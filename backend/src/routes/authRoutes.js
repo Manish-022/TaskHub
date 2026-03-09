@@ -2,7 +2,6 @@
 const express = require("express");
 const jwt = require("jsonwebtoken");
 const User = require("../models/User");
-const ApiError = require("../utils/ApiError");
 
 const router = express.Router();
 
@@ -11,20 +10,26 @@ const router = express.Router();
    Endpoint: POST /api/auth/register
 ====================================================== */
 
-router.post("/register", async (req, res, next) => {
+router.post("/register", async (req, res) => {
   try {
     const { name, email, password, role } = req.body;
 
     // Check required fields
     if (!name || !email || !password) {
-      return next(new ApiError(400, "All fields are required"));
+      return res.status(400).json({
+        status: "error",
+        message: "All fields are required",
+      });
     }
 
     // Check if user already exists
     const existingUser = await User.findOne({ email });
 
     if (existingUser) {
-      return next(new ApiError(400, "Email already registered"));
+      return res.status(400).json({
+        status: "error",
+        message: "Email already registered",
+      });
     }
 
     // Create user
@@ -45,7 +50,10 @@ router.post("/register", async (req, res, next) => {
       },
     });
   } catch (error) {
-    next(error);
+    res.status(500).json({
+      status: "error",
+      message: error.message,
+    });
   }
 });
 
@@ -54,18 +62,24 @@ router.post("/register", async (req, res, next) => {
    Endpoint: POST /api/auth/login
 ====================================================== */
 
-router.post("/login", async (req, res, next) => {
+router.post("/login", async (req, res) => {
   try {
     const { email, password } = req.body;
 
     if (!email || !password) {
-      return next(new ApiError(400, "Email and password are required"));
+      return res.status(400).json({
+        status: "error",
+        message: "Email and password are required",
+      });
     }
 
     const user = await User.findOne({ email });
 
     if (!user || !(await user.comparePassword(password))) {
-      return next(new ApiError(400, "Invalid credentials"));
+      return res.status(400).json({
+        status: "error",
+        message: "Invalid credentials",
+      });
     }
 
     // Generate JWT
@@ -89,7 +103,10 @@ router.post("/login", async (req, res, next) => {
       },
     });
   } catch (error) {
-    next(error);
+    res.status(500).json({
+      status: "error",
+      message: error.message,
+    });
   }
 });
 

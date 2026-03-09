@@ -1,6 +1,5 @@
 const jwt = require("jsonwebtoken");
 const User = require("../models/User");
-const ApiError = require("../utils/ApiError");
 
 const protect = async (req, res, next) => {
   let token;
@@ -14,19 +13,29 @@ const protect = async (req, res, next) => {
     try {
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-      req.user = await User.findById(decoded.id).select("-password");
+      const user = await User.findById(decoded.id).select("-password");
 
-      if (!req.user) {
-        return next(new ApiError(401, "User not found"));
+      if (!user) {
+        return res.status(401).json({
+          status: "error",
+          message: "User not found",
+        });
       }
 
+      req.user = user;
       return next();
     } catch (error) {
-      return next(new ApiError(401, "Invalid or expired token"));
+      return res.status(401).json({
+        status: "error",
+        message: "Invalid or expired token",
+      });
     }
   }
 
-  return next(new ApiError(401, "No token provided"));
+  return res.status(401).json({
+    status: "error",
+    message: "No token provided",
+  });
 };
 
 module.exports = protect;
