@@ -1,171 +1,228 @@
-# 🚀 Task Manager API (Days 1–7)
+# TaskHub Backend API
 
-A production-ready backend Task Manager API built using Node.js, Express, and MongoDB.
+A RESTful backend API for **TaskHub**, a task management application that allows users to create, manage, and organize tasks with secure authentication and role-based access control.
 
-This project demonstrates authentication, authorization, ownership-based access control, CRUD operations, and centralized error handling following clean architecture principles.
-
----
-
-## 📌 Tech Stack
-
-- Node.js
-- Express.js
-- MongoDB + Mongoose
-- JWT Authentication
-- Role-Based Access Control (RBAC)
+Built with **Node.js, Express, MongoDB, and JWT authentication**.
 
 ---
 
-# 🟢 Days 1–2: Authentication System
+## 🚀 Features
 
-### Features Implemented
-
-- User Registration
-- User Login
-- Password Hashing (bcrypt)
-- JWT Token Generation
-- Protected Routes Middleware
-
-### Concepts Learned
-
-- JWT Authentication Flow
-- Token-based Authorization
-- Middleware chaining in Express
-- Secure password storage
+* User Registration and Login
+* JWT Authentication
+* Password Hashing using bcrypt
+* Create, Read, Update, Delete Tasks
+* Role-Based Authorization (Admin / User)
+* Protected Routes using Middleware
+* Admin Panel APIs
+* MongoDB Database with Mongoose
+* RESTful API Design
 
 ---
 
-# 🟢 Days 3–4: Task CRUD + Ownership Logic
+## 🛠️ Tech Stack
 
-### Task Model
-
-- title
-- description
-- status
-- user (ObjectId reference)
-
-### Features Implemented
-
-- Create Task
-- Get All User Tasks
-- Update Task
-- Delete Task
-- Ownership validation (users can only modify their own tasks)
-
-### Concepts Learned
-
-- MongoDB Relationships (ref + populate)
-- Authorization vs Authentication
-- Resource ownership logic
-- Protected CRUD routes
+* **Node.js**
+* **Express.js**
+* **MongoDB**
+* **Mongoose**
+* **JWT (JSON Web Token)**
+* **bcrypt.js**
+* **dotenv**
+* **cors**
 
 ---
 
-# 🟢 Day 5: Role-Based Access Control (RBAC)
+## 📂 Project Structure
 
-### Roles
-
-- Admin
-- User
-
-### Features Implemented
-
-- Admin-only routes
-- Role-check middleware
-- Prevent admin self-deletion
-
-### Concepts Learned
-
-- Role-based middleware
-- Authorization layers
-- Multi-level access control
-- Secure route management
-
----
-
-# 🟢 Days 6–7: Error Handling + Clean Architecture
-
-### Features Implemented
-
-- Centralized Error Middleware
-- Custom ApiError Class
-- Async Handler Utility
-- Clean Response Format
-- Structured Folder Organization
-
-### Clean Folder Structure
-
-
-project/
+```
+TaskHub/
+│
+├── config/
+│      db.js
 │
 ├── controllers/
-├── middleware/
-├── models/
-├── routes/
-├── utils/
-│ ├── ApiError.js
-│ └── asyncHandler.js
+│      taskController.js
 │
-├── app.js
-└── server.js
-
+├── middlewares/
+│      authMiddleware.js
+│      checkAdmin.js
+│
+├── models/
+│      User.js
+│      Task.js
+│
+├── routes/
+│      authRoutes.js
+│      taskRoutes.js
+│      adminRoutes.js
+│
+├── server.js
+├── .env
+└── package.json
+```
 
 ---
 
-## 📦 API Response Format
+## ⚙️ Installation
 
-### ✅ Success Response
+Clone the repository:
 
-```json
-{
-  "status": "success",
-  "data": {}
-}
-❌ Error Response
-{
-  "status": "fail",
-  "message": "Error message"
-}
-🧠 Key Backend Concepts Mastered
+```
+git clone https://github.com/yourusername/taskhub-backend.git
+```
 
-Authentication (JWT)
+Navigate into the project folder:
 
-Authorization (RBAC)
+```
+cd taskhub-backend
+```
 
-Ownership-based Access Control
+Install dependencies:
 
-Middleware Chaining
+```
+npm install
+```
 
-Centralized Error Handling
+---
 
-Clean Code Architecture
+## 🔑 Environment Variables
 
-RESTful API Design
+Create a `.env` file in the root directory and add:
 
-MongoDB Relationships
+```
+PORT=5001
+MONGO_URI=your_mongodb_connection_string
+JWT_SECRET=your_jwt_secret_key
+```
 
-🎯 Project Highlights
+---
 
-Secure authentication system
+## ▶️ Run the Server
 
-Role-based protected routes
+Start the server:
 
-Ownership validation logic
+```
+node server.js
+```
 
-Centralized error management
+Server will run at:
 
-Production-ready backend structure
+```
+http://localhost:5001
+```
 
-🚀 Outcome
+---
 
-The backend is now:
+## 📌 API Endpoints
 
-Scalable
+### Authentication
 
-Secure
+#### Register User
 
-Structured
+```
+POST /api/auth/register
+```
 
-Production-ready
+#### Login User
 
-Interview-ready
+```
+POST /api/auth/login
+```
+
+---
+
+### Tasks
+
+#### Create Task
+
+```
+POST /api/tasks
+```
+
+#### Get All Tasks
+
+```
+GET /api/tasks
+```
+
+#### Update Task
+
+```
+PUT /api/tasks/:id
+```
+
+#### Delete Task
+
+```
+DELETE /api/tasks/:id
+```
+
+---
+
+### Admin Routes
+
+#### Get All Users
+
+```
+GET /api/admin/users
+```
+
+#### Delete User
+
+```
+DELETE /api/admin/users/:id
+```
+
+---
+
+## 🔐 Authentication
+
+Protected routes require a JWT token.
+
+Example header:
+
+```
+Authorization: Bearer YOUR_JWT_TOKEN
+```
+
+---
+
+## 🧪 Testing
+
+You can test APIs using:
+
+* Postman
+* Thunder Client (VS Code)
+* cURL
+
+---
+
+## 📈 Future Improvements
+
+* Task filtering & pagination
+* Task categories
+* Rate limiting
+* Logging system
+* API documentation with Swagger
+
+---
+
+## 👨‍💻 Author
+
+**Manish Kumar**
+
+Electronics & Communication Engineering
+NIT Patna
+
+Interests:
+
+* Backend Development
+* Web Development
+* AI / ML
+
+---
+
+## 📄 License
+
+This project is open source and available under the **MIT License**.
