@@ -1,6 +1,10 @@
-import React from 'react';
+import React from "react";
 function Dashboard() {
-  return <h2>Dashboard</h2>;
+  return (
+    <div className="text-center mt-20 text-3xl">
+      Welcome to TaskHub Dashboard 🚀
+    </div>
+  );
 }
 
 export default Dashboard;
