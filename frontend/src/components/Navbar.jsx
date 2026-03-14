@@ -1,10 +1,18 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { Menu, X } from "lucide-react";
 import React from "react";
 
 function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const navigate = useNavigate();
+
+  const token = localStorage.getItem("token");
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    navigate("/login");
+  };
 
   return (
     <nav className="bg-indigo-600 shadow-md">
@@ -19,26 +27,41 @@ function Navbar() {
 
         {/* Desktop Links */}
         <div className="hidden md:flex items-center gap-6">
-          <Link
-            to="/dashboard"
-            className="text-white hover:text-indigo-200 transition"
-          >
-            Dashboard
-          </Link>
+          {token && (
+            <Link
+              to="/dashboard"
+              className="text-white hover:text-indigo-200 transition"
+            >
+              Dashboard
+            </Link>
+          )}
 
-          <Link
-            to="/login"
-            className="text-white hover:text-indigo-200 transition"
-          >
-            Login
-          </Link>
+          {!token && (
+            <>
+              <Link
+                to="/login"
+                className="text-white hover:text-indigo-200 transition"
+              >
+                Login
+              </Link>
 
-          <Link
-            to="/register"
-            className="bg-white text-indigo-600 px-4 py-2 rounded-lg font-semibold hover:bg-indigo-100 transition"
-          >
-            Register
-          </Link>
+              <Link
+                to="/register"
+                className="bg-white text-indigo-600 px-4 py-2 rounded-lg font-semibold hover:bg-indigo-100 transition"
+              >
+                Register
+              </Link>
+            </>
+          )}
+
+          {token && (
+            <button
+              onClick={handleLogout}
+              className="bg-white text-indigo-600 px-4 py-2 rounded font-semibold hover:bg-indigo-100"
+            >
+              Logout
+            </button>
+          )}
         </div>
 
         {/* Mobile Menu Button */}
@@ -53,29 +76,47 @@ function Navbar() {
       {/* Mobile Menu */}
       {menuOpen && (
         <div className="md:hidden bg-indigo-500 px-6 pb-4 flex flex-col gap-4">
-          <Link
-            to="/dashboard"
-            className="text-white hover:text-indigo-200"
-            onClick={() => setMenuOpen(false)}
-          >
-            Dashboard
-          </Link>
+          {token && (
+            <Link
+              to="/dashboard"
+              className="text-white hover:text-indigo-200"
+              onClick={() => setMenuOpen(false)}
+            >
+              Dashboard
+            </Link>
+          )}
 
-          <Link
-            to="/login"
-            className="text-white hover:text-indigo-200"
-            onClick={() => setMenuOpen(false)}
-          >
-            Login
-          </Link>
+          {!token && (
+            <>
+              <Link
+                to="/login"
+                className="text-white hover:text-indigo-200"
+                onClick={() => setMenuOpen(false)}
+              >
+                Login
+              </Link>
 
-          <Link
-            to="/register"
-            className="bg-white text-indigo-600 px-4 py-2 rounded-lg font-semibold w-fit"
-            onClick={() => setMenuOpen(false)}
-          >
-            Register
-          </Link>
+              <Link
+                to="/register"
+                className="bg-white text-indigo-600 px-4 py-2 rounded-lg font-semibold w-fit"
+                onClick={() => setMenuOpen(false)}
+              >
+                Register
+              </Link>
+            </>
+          )}
+
+          {token && (
+            <button
+              onClick={() => {
+                handleLogout();
+                setMenuOpen(false);
+              }}
+              className="bg-white text-indigo-600 px-4 py-2 rounded font-semibold w-fit"
+            >
+              Logout
+            </button>
+          )}
         </div>
       )}
     </nav>
