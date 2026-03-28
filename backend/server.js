@@ -1,20 +1,14 @@
 require("dotenv").config();
-
 const express = require("express");
 const cors = require("cors");
-const connectDB = require("./config/db");
 
 const app = express();
 
-// Connect Database
-connectDB();
-
-// Middlewares
-app.use(cors());
+// Middleware
 app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(cors());
 
-// Routes
+// Routes - Fix the paths
 app.use("/api/auth", require("./routes/authRoutes"));
 app.use("/api/tasks", require("./routes/taskRoutes"));
 app.use("/api/admin", require("./routes/adminRoutes"));
@@ -47,7 +41,6 @@ app.use((err, req, res, next) => {
   });
 });
 
-// Start server
 const PORT = process.env.PORT || 5001;
 app.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);

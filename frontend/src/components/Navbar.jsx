@@ -1,10 +1,11 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
-import { Menu, X } from "lucide-react";
+import { Menu, X, MessageCircle } from "lucide-react";
 import React from "react";
 
 function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [chatOpen, setChatOpen] = useState(false);
   const navigate = useNavigate();
 
   const token = localStorage.getItem("token");
@@ -55,12 +56,21 @@ function Navbar() {
           )}
 
           {token && (
-            <button
-              onClick={handleLogout}
-              className="bg-white text-indigo-600 px-4 py-2 rounded font-semibold hover:bg-indigo-100"
-            >
-              Logout
-            </button>
+            <>
+              <button
+                onClick={() => setChatOpen(!chatOpen)}
+                className="text-white hover:text-indigo-200 transition"
+                title="AI Assistant"
+              >
+                <MessageCircle size={24} />
+              </button>
+              <button
+                onClick={handleLogout}
+                className="bg-white text-indigo-600 px-4 py-2 rounded font-semibold hover:bg-indigo-100"
+              >
+                Logout
+              </button>
+            </>
           )}
         </div>
 
@@ -107,15 +117,26 @@ function Navbar() {
           )}
 
           {token && (
-            <button
-              onClick={() => {
-                handleLogout();
-                setMenuOpen(false);
-              }}
-              className="bg-white text-indigo-600 px-4 py-2 rounded font-semibold w-fit"
-            >
-              Logout
-            </button>
+            <>
+              <button
+                onClick={() => {
+                  setChatOpen(!chatOpen);
+                  setMenuOpen(false);
+                }}
+                className="text-white hover:text-indigo-200 flex items-center gap-2"
+              >
+                <MessageCircle size={20} /> AI Assistant
+              </button>
+              <button
+                onClick={() => {
+                  handleLogout();
+                  setMenuOpen(false);
+                }}
+                className="bg-white text-indigo-600 px-4 py-2 rounded font-semibold w-fit"
+              >
+                Logout
+              </button>
+            </>
           )}
         </div>
       )}
